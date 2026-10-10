@@ -1,0 +1,17 @@
+# Configuration Hadolint — cours "Auditer son code avant de pousser"
+# Doc : https://github.com/hadolint/hadolint#configure
+#
+# Teste avec : hadolint Dockerfile
+
+# Niveau minimum à signaler : error, warning, info, style
+failure-threshold: warning
+
+# Règles à ignorer (à justifier en commentaire)
+ignore:
+  # DL3008 : versions apt non figées — acceptable si l'image est rebuildée régulièrement
+  # - DL3008
+
+# Registres de confiance pour FROM
+# trusted-registries:
+#   - docker.io/library
+#   - gcr.io/distroless

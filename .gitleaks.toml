@@ -1,0 +1,25 @@
+# Configuration Gitleaks — cours "Auditer son code avant de pousser"
+# Doc : https://github.com/gitleaks/gitleaks#configuration
+#
+# Ce fichier étend la configuration par défaut de Gitleaks.
+# Il n'est nécessaire que si tu veux ajouter des règles personnalisées
+# ou exclure des chemins spécifiques à ton projet.
+
+title = "gitleaks"
+
+# Exemple : exclure un dossier de fixtures de test
+# [[allowlists]]
+#   description = "Faux secrets dans les fixtures de test"
+#   paths = ['''tests/fixtures/''']
+
+# Exemple : règle personnalisée pour une clé interne
+# [[rules]]
+#   id = "cle-interne-mon-service"
+#   description = "Clé d'API du service interne"
+#   regex = '''MON_SERVICE_KEY_[A-Z0-9]{32}'''
+#   severity = "ERROR"
+
+# Exemple : ignorer un fingerprint précis (faux positif confirmé)
+# [allowlist]
+#   commits = ["fingerprint-du-commit"]
+#   # Préférer un commentaire #gitleaks:allow sur la ligne concernée

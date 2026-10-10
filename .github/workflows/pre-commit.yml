@@ -1,0 +1,30 @@
+# Workflow CI pre-commit — cours "Auditer son code avant de pousser"
+# Relance les deux portes locales sur un serveur propre à chaque PR.
+# SHA de actions/checkout à mettre à jour avec : pre-commit autoupdate --freeze
+
+name: pre-commit
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Installer pre-commit
+        run: pipx install pre-commit
+
+      - name: Porte 1 — commit (secrets, SAST)
+        run: pre-commit run --all-files --hook-stage pre-commit
+
+      - name: Porte 2 — push (dépendances, CI, conteneurs)
+        run: pre-commit run --all-files --hook-stage pre-push

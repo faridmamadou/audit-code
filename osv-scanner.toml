@@ -1,0 +1,19 @@
+# Configuration OSV-Scanner — cours "Auditer son code avant de pousser"
+# Doc : https://google.github.io/osv-scanner/configuration/
+#
+# Ce fichier doit être placé dans le même dossier que le lockfile concerné,
+# ou à la racine pour couvrir tout le dépôt.
+
+# Exemple d'exception : CVE qui ne concerne pas le projet
+# À renseigner après analyse, jamais à l'aveugle.
+# Le champ ignoreUntil force une réévaluation à l'échéance.
+
+# [[IgnoredVulns]]
+#   id = "GHSA-xxxx-xxxx-xxxx"
+#   ignoreUntil = 2026-12-31
+#   reason = "Fonction vulnérable non appelée dans notre contexte, cf. ticket SEC-42"
+
+# [[IgnoredVulns]]
+#   id = "CVE-2025-00000"
+#   ignoreUntil = 2026-09-01
+#   reason = "Pas de vecteur d'exploitation exposé — réévaluer à la prochaine mise à jour majeure"

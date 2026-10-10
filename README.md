@@ -482,32 +482,6 @@ La CI relance `pre-commit run --all-files` sur un serveur propre, et la branche 
 
 Les scanners repèrent les secrets, les dépendances vulnérables, les configurations dangereuses et les motifs connus. Ils voient mal les failles de logique, comme un contrôle d'accès oublié sur un endpoint. L'étude DryRun montre que les agents en produisent beaucoup. Une relecture humaine reste donc nécessaire sur le code qui touche à l'authentification et aux autorisations.
 
-## Adopter ces outils sans braquer l'équipe : le plan en 4 semaines
-
-Le premier `pre-commit run --all-files` sur un vieux projet peut sortir des centaines d'alertes. Tout bloquer dès le premier jour garantit une chose : tout le monde prendra l'habitude de `--no-verify`. La méthode qui marche est progressive.
-
-| Semaine | Ce qu'on active | Mode | Objectif de sortie |
-| --- | --- | --- | --- |
-| 1 | pre-commit + Gitleaks + detect-private-key | **Bloquant** dès le départ | Plus aucun nouveau secret ; baseline Gitleaks pour l'existant |
-| 2 | OSV-Scanner + zizmor au push | Bloquant pour zizmor (peu de bruit), informatif pour OSV | Workflows CI épinglés et durcis ; liste des CVE triée |
-| 3 | Semgrep sur les fichiers modifiés | Informatif, puis bloquant sur les règles à forte confiance | Règles bruyantes retirées ou ajustées |
-| 4 | Hadolint + Trivy au push, même config en CI | Bloquant sur HIGH et CRITICAL | Branche principale protégée par la CI |
-
-### Les quatre règles d'or des faux positifs
-
-1. **Ignorer au plus près** : un commentaire sur la ligne (`#gitleaks:allow`, `# nosemgrep: <règle>`) plutôt qu'un dossier exclu.
-2. **Toujours justifier** : un champ `reason` (OSV-Scanner) ou un commentaire qui dit pourquoi. Dans six mois, personne ne s'en souviendra.
-3. **Mettre une date d'expiration** quand l'outil le permet (`ignoreUntil` dans OSV-Scanner).
-4. **Faire relire les exceptions** : les fichiers `.gitleaksignore`, `osv-scanner.toml` et les `nosemgrep` passent en revue de code comme le reste.
-
-### Garder un push rapide
-
-Un hook qui prend plus d'une minute finit contourné. Si c'est le cas : déplace l'outil lent en CI, restreins-le aux fichiers concernés (pre-commit le fait par défaut au commit), ou passe-le en stage `manual` et lance-le avant chaque PR avec `pre-commit run --hook-stage manual`.
-
-### Pourquoi prioriser plutôt que tout corriger
-
-Selon Datadog, seules 18 % des vulnérabilités étiquetées « critiques » le restent une fois le contexte d'exécution pris en compte ([State of DevSecOps 2026](https://www.datadoghq.com/about/latest-news/press-releases/datadog-state-of-devsecops-report-2026/)). Traite d'abord ce qui est à la fois grave, atteignable et exposé ; le reste passe en file d'attente avec une date.
-
 ## Dépannage, les problèmes les plus courants
 
 **Mes hooks ne se lancent pas.** `pre-commit install` n'a probablement pas été lancé dans ce clone. Vérifie que le fichier `.git/hooks/pre-commit` existe. Pour les hooks de push, vérifie aussi `.git/hooks/pre-push`.

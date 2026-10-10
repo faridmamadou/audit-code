@@ -1,0 +1,8 @@
+# Fichier d'ignore Trivy — cours "Auditer son code avant de pousser"
+# Doc : https://aquasecurity.github.io/trivy/latest/docs/configuration/filtering/#trivyignore
+#
+# Chaque ligne est un identifiant CVE ou GHSA à ignorer.
+# Toujours ajouter une date et une raison en commentaire.
+
+# Exemple :
+# CVE-2025-00000  # Ignoré jusqu'au 2026-12-31 — fonction non appelée, cf. ticket SEC-42

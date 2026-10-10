@@ -1,0 +1,62 @@
+# Configuration pre-commit — cours "Auditer son code avant de pousser"
+# Après installation : pre-commit install
+# Pour figer les versions par SHA : pre-commit autoupdate --freeze
+
+default_install_hook_types: [pre-commit, pre-push]
+
+repos:
+
+  # ── Porte 1 : au commit ────────────────────────────────────────────────────
+
+  # Clés privées et certificats
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: detect-private-key
+
+  # Secrets : mots de passe, clés d'API, tokens
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # Analyse statique (SAST) sur les fichiers modifiés
+  - repo: https://github.com/semgrep/semgrep
+    rev: v1.178.0
+    hooks:
+      - id: semgrep
+        args: [--config, p/default, --error, --metrics=off]
+
+  # ── Porte 2 : au push ──────────────────────────────────────────────────────
+
+  # Dépendances vulnérables (lit les lockfiles)
+  - repo: https://github.com/google/osv-scanner
+    rev: v2.6.0
+    hooks:
+      - id: osv-scanner
+        stages: [pre-push]
+
+  # Workflows GitHub Actions
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.30.1
+    hooks:
+      - id: zizmor
+        stages: [pre-push]
+
+  # Dockerfile
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.15.1
+    hooks:
+      - id: hadolint-docker
+        stages: [pre-push]
+
+  # Vulnérabilités et mauvaises configurations IaC (binaire local requis)
+  - repo: local
+    hooks:
+      - id: trivy
+        name: Trivy
+        language: system
+        entry: trivy fs --scanners vuln,misconfig --severity HIGH,CRITICAL --exit-code 1
+        args: [.]
+        pass_filenames: false
+        stages: [pre-push]

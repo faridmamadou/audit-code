@@ -1,0 +1,30 @@
+# Règle Semgrep — injection de commande via Flask
+# cours "Auditer son code avant de pousser"
+# Doc : https://semgrep.dev/docs/writing-rules/rule-syntax/
+#
+# Teste avec : semgrep scan --config semgrep/injection-commande.yaml --metrics=off app.py
+
+rules:
+  - id: flask-injection-commande
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Une entrée utilisateur atteint une commande shell :
+      risque d'injection de commande (CWE-78).
+      Passe une liste d'arguments sans shell=True.
+    mode: taint
+    pattern-sources:
+      - pattern: request.args.get(...)
+      - pattern: request.form.get(...)
+      - pattern: request.json
+    pattern-sinks:
+      - patterns:
+          - pattern: subprocess.run($CMD, ..., shell=True, ...)
+          - focus-metavariable: $CMD
+      - patterns:
+          - pattern: subprocess.call($CMD, ..., shell=True, ...)
+          - focus-metavariable: $CMD
+      - patterns:
+          - pattern: os.system($CMD)
+          - focus-metavariable: $CMD
+    # Ignorer sur une ligne : # nosemgrep: flask-injection-commande
