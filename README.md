@@ -1,4 +1,4 @@
-# Auditer son code avant de pousser : le cours complet
+# Auditer son code avant de pousser
 
 Sep 24, 2026 · @Farid
 
